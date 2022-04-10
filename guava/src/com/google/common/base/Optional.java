@@ -123,11 +123,19 @@ public abstract class Optional<T> implements Serializable {
    *
    * @since 21.0
    */
+  //2n modif 
   @CheckForNull
   public static <T> Optional<T> fromJavaUtil(@CheckForNull java.util.Optional<T> javaUtilOptional) {
     return (javaUtilOptional == null) ? null : fromNullable(javaUtilOptional.orElse(null));
   }
-
+  
+  public void <T> Optional<T> fromJavaUtil () {
+	  Optional<T> javaUtilOptional
+	  if (optional != null) { 
+	  }
+	  Optional<T> text = null; // Noncompliant, a variable whose type is Optional should never itself be null
+	  // ...
+	}
   /**
    * Returns the equivalent {@code java.util.Optional} value to the given {@code
    * com.google.common.base.Optional}, or {@code null} if the argument is null.

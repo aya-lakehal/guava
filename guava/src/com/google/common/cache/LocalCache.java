@@ -4219,13 +4219,23 @@ class LocalCache<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V> 
     return compute(key, (k, oldValue) -> (oldValue == null) ? function.apply(key) : oldValue);
   }
 
-  @Override
   public V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> function) {
-    checkNotNull(key);
-    checkNotNull(function);
-    return compute(key, (k, oldValue) -> (oldValue == null) ? null : function.apply(k, oldValue));
-  }
-
+	    checkNotNull(key);
+	    checkNotNull(function);
+	    return compute(key, (k, oldValue) -> {
+	      try{
+	        if(oldValue==null){
+	          return null;
+	        }
+	        return function.apply(k, oldValue);
+	      }catch (Throwable e){
+	        this.put(k,oldValue);
+	        
+	        throw e;
+	      }
+	    });
+	  }
+  
   @Override
   public V merge(K key, V newValue, BiFunction<? super V, ? super V, ? extends V> function) {
     checkNotNull(key);
@@ -4906,10 +4916,8 @@ class LocalCache<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V> 
       return localCache.longSize();
     }
 
-    @Override
-    public ConcurrentMap<K, V> asMap() {
-      return localCache;
-    }
+    @Override   
+    public ConcurrentMap<K, V> asMap() { return localCache; }
 
     @Override
     public CacheStats stats() {

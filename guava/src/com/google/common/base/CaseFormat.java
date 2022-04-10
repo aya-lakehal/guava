@@ -130,25 +130,26 @@ public enum CaseFormat {
 
   /** Enum values can override for performance reasons. */
   String convert(CaseFormat format, String s) {
-    // deal with camel conversion
-    StringBuilder out = null;
-    int i = 0;
-    int j = -1;
-    while ((j = wordBoundary.indexIn(s, ++j)) != -1) {
-      if (i == 0) {
-        // include some extra space for separators
-        out = new StringBuilder(s.length() + 4 * format.wordSeparator.length());
-        out.append(format.normalizeFirstWord(s.substring(i, j)));
-      } else {
-        requireNonNull(out).append(format.normalizeWord(s.substring(i, j)));
-      }
-      out.append(format.wordSeparator);
-      i = j + wordSeparator.length();
-    }
-    return (i == 0)
-        ? format.normalizeFirstWord(s)
-        : requireNonNull(out).append(format.normalizeWord(s.substring(i))).toString();
-  }
+	  if (s.isEmpty()) {
+		  return "";
+		  }
+	  int boundary = wordBoundary.indexIn(s, 1);
+	  if (boundary < 0) {
+		  return format.normalizeFirstWord(s);
+		  }
+	  StringBuilder out = new StringBuilder(s.length() + 4 * format.wordSeparator.length()).append(format.normalizeFirstWord(s.substring(0, boundary)));
+	  int start = boundary + wordSeparator.length();
+	  while (true) {
+		  boundary = wordBoundary.indexIn(s, start + 1);
+		  int end = (boundary < 0) ? s.length() : boundary;
+		  out.append(format.wordSeparator).append(format.normalizeWord(s.substring(start, end)));
+		  if (boundary < 0) {
+			  break;
+			  }
+	  start = boundary + wordSeparator.length();
+	  }
+	  return out.toString();
+	  }
 
   /**
    * Returns a {@code Converter} that converts strings from this format to {@code targetFormat}.

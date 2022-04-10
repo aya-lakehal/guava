@@ -50,7 +50,8 @@ public final class Objects extends ExtraObjectsMethodsForWeb {
    * <p><b>Note for Java 7 and later:</b> This method should be treated as deprecated; use {@link
    * java.util.Objects#equals} instead.
    */
-  public static boolean equal(@CheckForNull Object a, @CheckForNull Object b) {
+  // 1er modif
+  public static boolean hashcode()(@CheckForNull Object a, @CheckForNull Object b) {
     return a == b || (a != null && a.equals(b));
   }
 
